@@ -20,9 +20,12 @@ Then, we initialize our project by running the project command along with the `-
 
 The ui-component CLI will then create the boilerplate files for the project. If it prompts you to update yo, do so with `npm install -g yo`.
 
-Now that the project's been scaffolded, we're ready to take a look at our new component. Run `npm install` to install the project dependencies (this may take a few minutes).
+Now that the project's been scaffolded, we're almost ready to take a look at our new component. Run `npm install` to install the project dependencies (this may take a few minutes).
 
-While the dependencies are installing, let's take a look at the files that have been added to the project folder.
+While the dependencies are installing, let's take a look at the files that have been added to the project folder:
+
+The `now-ui.json` is where we configure the details of our new component, including how this component appears and interacts with the UI Builder interface. We'll add more to it later, but for now, the appearance of the component in the UI Builder menus (label, icon, description) can be set in this file.
+<img src="images/First-Look_2.png">
 
 
  `snc ui-component develop` to start the development server - this should automatically open your default web browser to display the scaffolded component.
