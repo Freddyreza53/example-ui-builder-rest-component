@@ -31,11 +31,11 @@ The `now-cli.json` contains the config for the CLI. If you have issues proxying 
 
 The only top-level file we'll need to edit is the `package.json`. As of time of writing, there's an additional dependency we'll need to install to test our components in the local environment. Adding the line `"react-error-overlay": "6.0.9"` to `devDependencies` (and running the command `npm install`) will prevent a bugged error overlay from blocking interaction with our component.
 
-<img src="images/First-Look_5.png" alt="Adding 'react-error-overlay': '6.0.9' to devDependencies">
+<img src="images/First-Look_5.png" alt="Adding 'react-error-overlay': '6.0.9' to devDependencies" />
 
  `snc ui-component develop` to start the development server. If the process seems to be stuck, ctrl + c and run the same command again. You should get a message confirming that the project is now running at http://localhost:8081/. Navigate to this address and you'll see...
 
- <img src="images/First-Look_6.png" alt="A blank white screen">
+ <img src="images/First-Look_6.png" alt="A blank white screen" />
 
  We're looking at our brand new component! There's just nothing in it yet.
 
@@ -44,3 +44,9 @@ The only top-level file we'll need to edit is the `package.json`. As of time of 
  > Note: The compiler that ServiceNow uses to create these components does not recognize .jsx files - use .js instead.
 
  Opening the index.js file, we discover the reason for the blank white screen: our component is rendering only an empty div. Type "Hello World!" into the div, and the component will automatically recompile and display in the browser.
+
+ At this point, the index.js file contains all the code for our component (aside from any styling rules we may have included in the styles.scss):
+
+ <img src="images/First-Look_7.png" alt="The index.js file, with our 'Hello World' text added" />
+
+ The createCustomElement function accepts the name of the component as the first argument, and an object containing the rendering options as the second component. 
