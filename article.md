@@ -27,5 +27,8 @@ While the dependencies are installing, let's take a look at the files that have 
 The `now-ui.json` is where we configure the details of our new component, including how this component appears and interacts with the UI Builder interface. We'll add more to it later, but for now, the appearance of the component in the UI Builder menus (label, icon, description) can be set in this file.
 <img src="images/First-Look_2.png">
 
+The `now-cli.json` contains the config for the CLI. If you have issues proxying your requests from the development environment, this is where to look.
+
+The only top-level file we'll need to edit is the `package.json`. As of time of writing, there's an additional dependency we'll need to install to test our components in the local environment. 
 
  `snc ui-component develop` to start the development server - this should automatically open your default web browser to display the scaffolded component.
