@@ -1,0 +1,15 @@
+{
+	"components": {
+	    "x-792462-rest-example": {
+	        "innerComponents": [],
+			"uiBuilder": {
+				"associatedTypes": ["global.core", "global.landing-page"],
+				"label": "My Component",
+				"icon": "document-outline",
+				"description": "A description of my component",
+				"category": "primitives"
+			}
+	    }
+	},
+	"scopeName": "x_792462_rest_ex_1"
+}

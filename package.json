@@ -1,0 +1,30 @@
+{
+	"name": "rest-example",
+	"version": "0.0.1",
+	"private": false,
+	"description": "A component that uses the Service Now REST API to render an editable table within the Now Experience UI builder",
+	"keywords": [
+		"ServiceNow",
+		"Now Experience UI Component",
+		"rest-example"
+	],
+	"readme": "./README.md",
+	"engines": {
+		"node": ">=8.6.0",
+		"npm": ">=5.3.0"
+	},
+	"module": "src/index.js",
+	"dependencies": {
+		"@servicenow/ui-core": "quebec",
+		"@servicenow/ui-renderer-snabbdom": "quebec",
+		"@servicenow/cli-archetype": "20.0.0",
+		"@servicenow/cli-component-archetype": "20.0.0",
+		"@servicenow/sass-theme": "quebec",
+		"@servicenow/sass-kit": "quebec",
+		"@servicenow/library-translate": "quebec"
+	},
+	"devDependencies": {
+		"@servicenow/cli-archetype-dev": "20.0.0",
+		"@servicenow/cli-component-archetype-dev": "20.0.0"
+	}
+}
