@@ -29,6 +29,18 @@ The `now-ui.json` is where we configure the details of our new component, includ
 
 The `now-cli.json` contains the config for the CLI. If you have issues proxying your requests from the development environment, this is where to look.
 
-The only top-level file we'll need to edit is the `package.json`. As of time of writing, there's an additional dependency we'll need to install to test our components in the local environment. 
+The only top-level file we'll need to edit is the `package.json`. As of time of writing, there's an additional dependency we'll need to install to test our components in the local environment. Adding the line `"react-error-overlay": "6.0.9"` to `devDependencies` (and running the command `npm install`) will prevent a bugged error overlay from blocking interaction with our component.
 
- `snc ui-component develop` to start the development server - this should automatically open your default web browser to display the scaffolded component.
+<img src="images/First-Look_5.png" alt="Adding 'react-error-overlay': '6.0.9' to devDependencies">
+
+ `snc ui-component develop` to start the development server. If the process seems to be stuck, ctrl + c and run the same command again. You should get a message confirming that the project is now running at http://localhost:8081/. Navigate to this address and you'll see...
+
+ <img src="images/First-Look_6.png" alt="A blank white screen">
+
+ We're looking at our brand new component! There's just nothing in it yet.
+
+ If we open the src/ directory, we'll see the files that we'll be editing to create our custom components. The convention used by ServiceNow for organizing component files is to store each component/subcomponent in its own folder, with an index.js as the entrypoint. When we start, we can write code directly in the index.js, but as a component grows more complex, you may want to refactor it into a view.js, actionHandlers.js, etc.
+
+ > Note: The compiler that ServiceNow uses to create these components does not recognize .jsx files - use .js instead.
+
+ Opening the index.js file, we discover the reason for the blank white screen: our component is rendering only an empty div. Type "Hello World!" into the div, and the component will automatically recompile and display in the browser.

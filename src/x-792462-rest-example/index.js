@@ -4,7 +4,7 @@ import styles from './styles.scss';
 
 const view = (state, {updateState}) => {
 	return (
-		<div></div>
+		<div>Hello World!</div>
 	);
 };
 
