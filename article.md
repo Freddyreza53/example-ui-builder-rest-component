@@ -67,11 +67,19 @@ By adding html (jsx) to the return statement of the view function, we can add co
 
 In the createCustomElement function, we'll add a property to the options object called 'initialState,' and map it to an object with a 'name' key and a corresponding value.
 
-<img src="images/State_1.png" alt="configuring the initialState of the component">
+<img src="images/State_1.png" alt="Configuring the initialState of the component">
 
  initialState sets the default state when the component is mounted. The state can then be accessed from the view component, or any actionHandlers we may add later on.
 
  To access the current value of 'name', we can use object destructuring or dot notation to store the value in a variable, then use curly braces to evaluate that variable as code in our jsx.
+
+<img src="images/State_2.png" alt="Accessing and interpolating the value of state.name">
+
+Returning to the browser, you should see that the component has updated to display the name that we passed in. The neat thing about storing our dynamic values in state is that, when the state of our component changes, only this single component will rerender, without requiring a refresh or rerendering the rest of the components on the page. This makes our app feel snappy and performant, and helps us organize our project by providing components only the data that is relevant to its function.
+
+We can see this in action by adding a controlled input, which will allow our user to interact with the state and see the changes in real time. Let's add a div with a label and text input above our existing div. In addition to the type and name attributes, we'll also set `value={name}`. This will cause an error, since the return jsx of a component must be a single element - so we'll `import { Fragment } from '@servicenow/ui-renderer-snabbdom'` to wrap around our divs. 
+
+<img src="images/State_3.png" alt="Adding an input element">
 
 * Initialize state
 * Update State

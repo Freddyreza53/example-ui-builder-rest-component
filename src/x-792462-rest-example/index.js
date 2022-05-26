@@ -1,15 +1,28 @@
-import {createCustomElement} from '@servicenow/ui-core';
-import snabbdom from '@servicenow/ui-renderer-snabbdom';
+import { createCustomElement } from '@servicenow/ui-core';
+import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
 import styles from './styles.scss';
 
-const view = (state, {updateState}) => {
+const view = (state, { updateState }) => {
+
+	const { name } = state;
+
 	return (
-		<div>Hello World!</div>
+		<Fragment>
+			<div>
+				<label htmlFor="name-input">Name: </label>
+				<input 
+					type="text" 
+					name="name-input"
+					value={name}
+				/>
+			</div>
+			<div>Hello {name}!</div>
+		</Fragment>
 	);
 };
 
 createCustomElement('x-792462-rest-example', {
-	renderer: {type: snabbdom},
+	renderer: { type: snabbdom },
 	view,
 	styles,
 	initialState: {
