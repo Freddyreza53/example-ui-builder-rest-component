@@ -11,5 +11,8 @@ const view = (state, {updateState}) => {
 createCustomElement('x-792462-rest-example', {
 	renderer: {type: snabbdom},
 	view,
-	styles
+	styles,
+	initialState: {
+		name: 'ServiceNow User'
+	}
 });

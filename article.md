@@ -61,8 +61,17 @@ There are more configuration options, like **state**, **properties**, and **acti
 
 > There are some quirks to jsx - to avoid reserved javascript words, the html 'class' attribute becomes 'className', and the 'for' attribute becomes 'htmlFor.' Using curly braces {} within jsx marks code that will be evaluated, and is useful for variable interpolation or short-circuiting. Finally, remember that although we can write jsx within our .js files, this particular compiler doesn't recognize the .jsx extension.
 
+## Stateful Components
 
+By adding html (jsx) to the return statement of the view function, we can add content to our component, and style it with the styles.scss page. However, to add interactivity and leverage the performance that comes from using the VirtualDOM, we'll manipulate the state of the component to determine what's rendered.
 
+In the createCustomElement function, we'll add a property to the options object called 'initialState,' and map it to an object with a 'name' key and a corresponding value.
+
+<img src="images/State_1.png" alt="configuring the initialState of the component">
+
+ initialState sets the default state when the component is mounted. The state can then be accessed from the view component, or any actionHandlers we may add later on.
+
+ To access the current value of 'name', we can use object destructuring or dot notation to store the value in a variable, then use curly braces to evaluate that variable as code in our jsx.
 
 * Initialize state
 * Update State
