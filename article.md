@@ -81,7 +81,14 @@ We can see this in action by adding a controlled input, which will allow our use
 
 <img src="images/State_3.png" alt="Adding an input element">
 
-* Initialize state
+Once our input element is added and rendering on the page, we can make the input controlled by adding the following on-change attribute and function:
+
+`on-change={(e) => updateState({...state, name: e.target.value})}`
+
+This attribute adds an event listener to the input, which will call the updateState function with the event as an argument. UpdateState takes a single argument, and sets that argument as the new state of the object. We create a new object by using the spread operator on state, and then overwriting the name property with the event's target.value.
+
+
+Still TODO:
 * Update State
 * Include HTTP effect action Handler
 * Render Result

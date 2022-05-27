@@ -14,6 +14,7 @@ const view = (state, { updateState }) => {
 					type="text" 
 					name="name-input"
 					value={name}
+					on-change={(e)=>updateState({...state, name: e.target.value})}
 				/>
 			</div>
 			<div>Hello {name}!</div>
