@@ -83,15 +83,30 @@ We can see this in action by adding a controlled input, which will allow our use
 
 Once our input element is added and rendering on the page, we can make the input controlled by adding the following on-change attribute and function:
 
-`on-change={(e) => updateState({...state, name: e.target.value})}`
+`on-change={(e) => updateState({name: e.target.value})}`
 
-This attribute adds an event listener to the input, which will call the updateState function with the event as an argument. UpdateState takes a single argument, and sets that argument as the new state of the object. We create a new object by using the spread operator on state, and then overwriting the name property with the event's target.value.
+This attribute adds an event listener to the input, which will call the updateState function with the event as an argument when the input value is changed. UpdateState takes a single argument, an object with key/value pairs for the aspects of state that we want to change.
+
+<img src="images/State_4.png" alt="adding an on-change event listener to the input element" />
+
+> Note: If you're used to React, you might expect to have to spread state when passing it to the updateState() function, in order to avoid losing any other properties of the state object. Here, though, the updateState() function will only change the values of the properties you provide it, so spreading state is not necessary.
+
+Unlike the `onChange` property of React, our `on-change` function will fire only when we press enter or the input loses focus. If you'd like your component to update on every keystroke, use `on-keyup`.
+
+## Action Handlers
+
+Now that we're familiar with how to initialize state and update data stored in state, it's nearly time to consume the REST API to retrieve and display some data from our instance.
+
+To do this, we'll set up some action handlers. REST API calls don't necessarily have to be triggered by actions, but doing so makes it easy organize our code in a consistent and reusable way (once you get the hang of the structure).
 
 
 Still TODO:
-* Update State
+- [x] Update State
 * Include HTTP effect action Handler
 * Render Result
 * Make Table subcomponent
     * & Row component
 * Replace in-app state tracking with UI Builder property
+
+
+-- [This is basically the same article](https://developer.servicenow.com/blog.do?p=/post/nowexp-http-effect/)

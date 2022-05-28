@@ -6,6 +6,7 @@ const view = (state, { updateState }) => {
 
 	const { name } = state;
 
+	console.log('rerendered')
 	return (
 		<Fragment>
 			<div>
@@ -14,7 +15,7 @@ const view = (state, { updateState }) => {
 					type="text" 
 					name="name-input"
 					value={name}
-					on-change={(e)=>updateState({...state, name: e.target.value})}
+					on-keyup={(e)=>updateState({name: e.target.value})}
 				/>
 			</div>
 			<div>Hello {name}!</div>
