@@ -113,11 +113,11 @@ If you refresh the page and check the console, you'll see that the function we m
 
 We'll use the createHttpEffect helper function provided by ServiceNow to build our effect - while a regular REST request (using 'fetch' or 'axios,' for example) will work, using createHttpEffect allows us to tap into the coeffects provided by the createCustomElement function and follow the same action patterns elsewhere in our component. 
 
-The createHttpEffect function takes two arguments: the API endpoint, and an object containing the method, query parameters, and other options. Once the createHttpEffect is bound to an action type, we can create a REST call just by dispatching an action and attaching the relevant parameters.
-
 To test our REST request, we'll need to configure three total actions - one to send an action with a payload containing the request options, one create the effect and initiate the request, and dispatch an action with the results, and a final action to handle the response.
 
 First, let's create a new action 'FETCH_TABLE', which will accept an action and send the request. Here, we establish the request method, and define the parameters (according to the [ServiceNow REST API documentation](https://developer.servicenow.com/dev.do#!/reference/api/sandiego/rest/)) that we'll send in the initial action. We'll also define the type of the action that will be dispatched when the request succeeds or fails.
+
+The createHttpEffect function takes two arguments: the API endpoint, and an object containing the method, query parameters, and other options. Once the createHttpEffect is bound to an action type, we can create a REST call just by dispatching an action and attaching the relevant parameters.
 
 ```
 'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
@@ -159,10 +159,83 @@ Now that our handlers have been defined, when we refresh the page, the following
 2. The 'FETCH_TABLE' handler will catch that action, and create an HTTP effect, sending a GET request to the api/now/table/{table_name} endpoint of our ServiceNow instance, and dispatching a 'LOG_RESULT' action when the request resolves
 3. The 'LOG RESULT' handler prints the action payload, containing our request results, to the console.
 
+Logging the results is great and all, but to actually use the data, we'll want to store it in the component state. This way, when the request resolves, and state is updated, our component will automatically rerender itself with the retrieved data. To do this, we'll need to update our `initialState` property with a property that we'll store our query results in:
+
+```
+initialState: {
+    ...,
+    query_result: [],
+}
+```
+
+and change our 'FETCH_TABLE' action handler to include `successActionType: 'FETCH_TABLE_SUCCESS'`, defining the 'FETCH_TABLE_SUCCESS' handler like so: 
+
+```
+'FETCH_TABLE_SUCCESS': ({action, updateState}) => {
+    updateState({query_result: action.payload.result})
+},
+```
+
 ## Rendering the Request Result
 
-Now that we're successfully retrieving data from our ServiceNow instance, we'll want to display that data in our component. 
+Now that we're successfully retrieving data from our ServiceNow instance, we'll want to display that data in our component. For now, we'll make a simple functional component that will accept the dataset as props, and output an html table with the first name, last name, and email address of the user.
 
+Since our file is getting larger, creating our table subcomponent in another file will help keep our code organized. 
+
+In the component folder, create a new file named `ResultTable.js`, with the following component boilerplate:
+
+```
+const ResultTable = ({data}) => {
+  return (
+    <div>ResultTable</div>
+  )
+}
+
+export default ResultTable
+```
+
+Our subcomponent can now be included in our `index.js` with 
+
+`import ResultTable from './ResultTable';`
+
+and rendered within our view component by adding `<ResultTable />` to the jsx in the return statement. At the moment, it will just display the text 'ResultTable', but we can provide the `query_result` that we're storing in state by including it in the component props, like so:
+
+`<ResultTable data={state.query_result} />`
+
+If we want to test that our data is being passed appropriately, we can `console.log(data)` within the ResultTable component, or even change the ResultTable return statement to show the component updating on the DOM in realtime: 
+
+`<div>{JSON.stringify(data)}</div>`
+
+Now, we just have to add the necessary logic to the ResultTable component to map the results to an html table. The ES6 Array.map() method is particularly helpful for this.
+
+```
+const ResultTable = ({data}) => {
+  return (
+    <table>
+      <thead>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </thead>
+      <tbody>
+        {data.map(row => {
+          return <tr>
+            <td>{row.first_name}</td>
+            <td>{row.last_name}</td>
+            <td>{row.email}</td>
+          </tr>
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+export default ResultTable
+```
+
+gives us: 
+
+<img src="images/Rendering_1.png" alt="The table rendered by the ResultTable subcomponent" />
 
 ==================================
 
