@@ -89,7 +89,7 @@ This attribute adds an event listener to the input, which will call the updateSt
 
 <img src="images/State_4.png" alt="adding an on-change event listener to the input element" />
 
-> Note: If you're used to React, you might expect to have to spread state when passing it to the updateState() function, in order to avoid losing any other properties of the state object. Here, though, the updateState() function will only change the values of the properties you provide it, so spreading state is not necessary.
+> Note: If you're used to React, you might expect to have to spread state when passing it to the updateState() function. With snabbdomm, however, the updateState() function will only change the values of the properties you provide it, and doesn't require you to create a new object reference manually, so spreading state is not necessary.
 
 Unlike the `onChange` property of React, our `on-change` function will fire only when we press enter or the input loses focus. If you'd like your component to update on every keystroke, use `on-keyup`.
 
