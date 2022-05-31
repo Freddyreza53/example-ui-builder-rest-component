@@ -1,6 +1,6 @@
 # Building a Custom Table Component for Use in the Now Experience UI Builder
 
-While the Now Experience UI Builder provides a number of built-in components for constructing experiences, sometimes you may want to tweak an existing component beyond what's possible in the UI Builder, or even create your own component from scratch. In this article, we'll walk through the process of creating a custom component, setting up action handlers to call the Service Now REST API, and configuring the component to accept custom parameters passed to it through the UI Builder interface.
+While the Now Experience UI Builder provides a number of built-in components for constructing experiences, you may want to tweak an existing component beyond what's possible in the UI Builder, or even create your own component from scratch. In this series of articles, we'll walk through the process of creating a custom component, setting up action handlers to call the Service Now REST API, and configuring the component to accept custom parameters passed to it through the UI Builder interface.
 
 This article assumes you have node, the ServiceNow CLI, and the ui-component CLI extension already installed. If not, check out [this article on setting up the development environment on MacOS](https://creator-dna.com/blog/macos-setup), or [this article for getting started on Windows](https://creator-dna.com/blog/1hj866nlrwslzlesekt0c14grhh8u1).
 
@@ -41,7 +41,7 @@ We're looking at our brand new component! There's just nothing in it yet.
 
 If we open the src/ directory, we'll see the files that we'll be editing to create our custom components. The convention used by ServiceNow for organizing component files is to store each component/subcomponent in its own folder, with an index.js as the entrypoint. When we start, we can write code directly in the index.js, but as a component grows more complex, you may want to refactor it into a view.js, actionHandlers.js, etc.
 
-> Note: The compiler that ServiceNow uses to create these components does not recognize .jsx files - use .js instead.
+> Note: The compiler that ServiceNow uses to build these components does not recognize .jsx files - use .js instead.
 
 Opening the src/index.js file, we discover the reason for the blank white screen: our component is rendering only an empty div. Type "Hello World!" into the div, and the component will automatically recompile and display in the browser.
 
@@ -93,7 +93,7 @@ This attribute adds an event listener to the input, which will call the updateSt
 
 Unlike the `onChange` property of React, our `on-change` function will fire only when we press enter or the input loses focus. If you'd like your component to update on every keystroke, use `on-keyup`.
 
-## Action Handlers
+## Action Handlers and Effects
 
 Now that we're familiar with how to initialize state and update data stored in state, it's nearly time to consume the REST API to retrieve and display some data from our instance.
 
@@ -111,24 +111,75 @@ actionHandlers: {
 
 If you refresh the page and check the console, you'll see that the function we mapped to the COMPONENT_BOOTSTRAPPED action runs once, but doesn't run again if we edit the text input and force the component to rerender. This makes the COMPONENT_BOOTSTRAPPED action perfect for doing the initial fetch for the data we want to present to the user, and saving that data in the component state.
 
-We'll use the createHttpEffect helper function provided by ServiceNow to build our effect - it just massages the data a bit to make it easier to write, and it's the method for creating httpEffects that most other tutorials will use. The createHttpEffect function takes two arguments: the API endpoint, and a configuration object.
+We'll use the createHttpEffect helper function provided by ServiceNow to build our effect - while a regular REST request (using 'fetch' or 'axios,' for example) will work, using createHttpEffect allows us to tap into the coeffects provided by the createCustomElement function and follow the same action patterns elsewhere in our component. 
 
-Check the [REST API Developer Docs]
+The createHttpEffect function takes two arguments: the API endpoint, and an object containing the method, query parameters, and other options. Once the createHttpEffect is bound to an action type, we can create a REST call just by dispatching an action and attaching the relevant parameters.
+
+To test our REST request, we'll need to configure three total actions - one to send an action with a payload containing the request options, one create the effect and initiate the request, and dispatch an action with the results, and a final action to handle the response.
+
+First, let's create a new action 'FETCH_TABLE', which will accept an action and send the request. Here, we establish the request method, and define the parameters (according to the [ServiceNow REST API documentation](https://developer.servicenow.com/dev.do#!/reference/api/sandiego/rest/)) that we'll send in the initial action. We'll also define the type of the action that will be dispatched when the request succeeds or fails.
 
 ```
-[COMPONENT_BOOTSTRAPPED]: createHttpEffect('api/)
+'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
+    method: 'GET',
+    pathParams: ['table_name'],
+    queryParams: ['sysparm_limit', 'sysparm_query'],
+    successActionType: 'LOG_RESULTS',
+    errorActionType: 'LOG_RESULTS',
+}),
 ```
 
+When the request resolves, we'll use an additional action handler to log the results:
+
+```
+'LOG_RESULTS': ({action}) => console.log(action.payload)
+```
+
+This handler uses object destructuring to access the action that triggers it, and log the payload of that action.
+
+Finally, we'll edit our COMPONENT_BOOTSTRAPPED handler to dispatch an action with the details of the request we want to make when the component loads. For now, we'll just query the sys_user table for 20 users, ordered by the 'number' field:
+
+```
+[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => dispatch('FETCH_TABLE', {
+			table_name: 'sys_user',
+			sysparm_limit: '20',
+			sysparm_query: 'ORDERBYDESCnumber'
+		}),
+```
+
+> In the above examples, we access **dispatch** and **action** by destructuring the **coeffects**, which are passed to all of our action handlers by default. There are a number of useful objects and functions that we can access in this way - these are detailed in the Effects section of the [Action Handler Documentation](https://developer.servicenow.com/dev.do#!/reference/now-experience/quebec/ui-framework/main-concepts/action-handlers)
+
+AT this point, our actionHandlers object should look like this: 
+
+<img src="images/Action_Handlers_1.png" alt="The COMPONENT_BOOTSTRAPPED, FETCH_TABLE, and LOG_RESULT action handlers, set up to test our test request" />
+
+Now that our handlers have been defined, when we refresh the page, the following processes will occur:
+
+1. The COMPONENT_BOOTSTRAPPED lifecycle action will trigger our handler to dispatch a 'FETCH_TABLE' action with the given configuration.
+2. The 'FETCH_TABLE' handler will catch that action, and create an HTTP effect, sending a GET request to the api/now/table/{table_name} endpoint of our ServiceNow instance, and dispatching a 'LOG_RESULT' action when the request resolves
+3. The 'LOG RESULT' handler prints the action payload, containing our request results, to the console.
+
+## Rendering the Request Result
+
+Now that we're successfully retrieving data from our ServiceNow instance, we'll want to display that data in our component. 
+
+
+==================================
 
 Still TODO:
+- [x] Overview of template files
 - [x] Update State
-* Include HTTP effect action Handler
-* Render Result
-* Make Table subcomponent
-    * & Row component
-* Replace in-app state tracking with UI Builder property
+- [x] Include HTTP effect action Handler
+- [ ] Render Request Result
+- [ ] Make Table subcomponent
+    - [ ] & Row component
+- [ ] Replace in-app state tracking with UI Builder property
+- [ ] Style the Table
 
 
-* Confirm - can you use actions to pass messages between different components? Almost certainly yes.
+* Confirm - can you use actions to pass messages between different components? A: Kind of: Actions are unidirectional and not observable by siblings/children. Store management must be handled at the top level (user params, I think?)
 
--- [This is basically the same article](https://developer.servicenow.com/blog.do?p=/post/nowexp-http-effect/)
+-- [Another simple httpeffect article](https://developer.servicenow.com/blog.do?p=/post/nowexp-http-effect/)]
+
+
+The queries accept the field name, not the key value returned.

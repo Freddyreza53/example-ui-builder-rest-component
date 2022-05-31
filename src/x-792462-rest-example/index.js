@@ -34,6 +34,18 @@ createCustomElement('x-792462-rest-example', {
 		name: 'ServiceNow User'
 	},
 	actionHandlers: {
-		[COMPONENT_BOOTSTRAPPED]: () => console.log(createHttpEffect)
+		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => dispatch('FETCH_TABLE', {
+			table_name: 'sys_user',
+			sysparm_limit: '20',
+			sysparm_query: 'ORDERBYDESCnumber'
+		}),
+		'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
+			method: 'GET',
+			pathParams: ['table_name'],
+			queryParams: ['sysparm_limit', 'sysparm_query'],
+			successActionType: 'LOG_RESULT',
+			errorActionType: 'LOG_RESULT',
+		}),
+		'LOG_RESULT': ({action}) => console.log(action.payload),
 	}
 });
