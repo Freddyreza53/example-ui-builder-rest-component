@@ -97,7 +97,27 @@ Unlike the `onChange` property of React, our `on-change` function will fire only
 
 Now that we're familiar with how to initialize state and update data stored in state, it's nearly time to consume the REST API to retrieve and display some data from our instance.
 
-To do this, we'll set up some action handlers. REST API calls don't necessarily have to be triggered by actions, but doing so makes it easy organize our code in a consistent and reusable way (once you get the hang of the structure).
+To do this, we'll set up some action handlers. REST API calls don't necessarily have to be triggered by actions, but doing so makes it easy organize our code in a consistent and reusable way (once you get the hang of the structure, that is).
+
+For our table component, we'll want to retrieve data immediately when it appears, so we'll utilize a built-in action, COMPONENT_BOOTSTRAPPED. We'll import it with `import { actionTypes } from '@servicenow/ui-core';`, and `const {COMPONENT_BOOTSTRAPPED} = actionTypes;`. Then, we'll add a new property `actionHandlers` to the config object we're passing into the createCustomElement() function, and map COMPONENT_BOOTSTRAPPED to a method:
+
+```
+actionHandlers: {
+    [COMPONENT_BOOTSTRAPPED]: () => console.log('bootstrapped!')
+}
+```
+
+> A Note on 'Actions': Actions in ServiceNow are similar to Actions in a framework like Redux. They're composed of two pieces: a type (string), and a payload. Actions can be dispatched manually, or by built-in triggers in the component life cycle. In a Now Experience component, if an action.type matches a key defined in the actionHandlers object, the function mapped to that key (the effect) will fire.
+
+If you refresh the page and check the console, you'll see that the function we mapped to the COMPONENT_BOOTSTRAPPED action runs once, but doesn't run again if we edit the text input and force the component to rerender. This makes the COMPONENT_BOOTSTRAPPED action perfect for doing the initial fetch for the data we want to present to the user, and saving that data in the component state.
+
+We'll use the createHttpEffect helper function provided by ServiceNow to build our effect - it just massages the data a bit to make it easier to write, and it's the method for creating httpEffects that most other tutorials will use. The createHttpEffect function takes two arguments: the API endpoint, and a configuration object.
+
+Check the [REST API Developer Docs]
+
+```
+[COMPONENT_BOOTSTRAPPED]: createHttpEffect('api/)
+```
 
 
 Still TODO:
@@ -108,5 +128,7 @@ Still TODO:
     * & Row component
 * Replace in-app state tracking with UI Builder property
 
+
+* Confirm - can you use actions to pass messages between different components? Almost certainly yes.
 
 -- [This is basically the same article](https://developer.servicenow.com/blog.do?p=/post/nowexp-http-effect/)

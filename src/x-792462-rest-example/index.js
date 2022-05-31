@@ -1,6 +1,9 @@
-import { createCustomElement } from '@servicenow/ui-core';
+import { createCustomElement, actionTypes } from '@servicenow/ui-core';
+import {createHttpEffect} from '@servicenow/ui-effect-http';
 import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
 import styles from './styles.scss';
+
+const {COMPONENT_BOOTSTRAPPED} = actionTypes;
 
 const view = (state, { updateState }) => {
 
@@ -29,5 +32,8 @@ createCustomElement('x-792462-rest-example', {
 	styles,
 	initialState: {
 		name: 'ServiceNow User'
+	},
+	actionHandlers: {
+		[COMPONENT_BOOTSTRAPPED]: () => console.log(createHttpEffect)
 	}
 });
