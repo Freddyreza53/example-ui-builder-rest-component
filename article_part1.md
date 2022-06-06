@@ -2,6 +2,8 @@
 
 While the Now Experience UI Builder provides a number of built-in components for constructing experiences, you may want to tweak an existing component beyond what's possible in the UI Builder, or even create your own component from scratch. In this series of articles, we'll walk through the process of creating a custom component, setting up action handlers to call the Service Now REST API, and configuring the component to accept custom parameters passed to it through the UI Builder interface.
 
+In this, the first article of the series, we'll be highlighting some of the differences between the snabbdom renderer (used in the Now Experience UI) and ReactDOM renderer, and will initializing a simple stateful component that accepts user input and updates the DOM to reflect that input.
+
 This article assumes you have node, the ServiceNow CLI, and the ui-component CLI extension already installed. If not, check out [this article on setting up the development environment on MacOS](https://creator-dna.com/blog/macos-setup), or [this article for getting started on Windows](https://creator-dna.com/blog/1hj866nlrwslzlesekt0c14grhh8u1).
 
 ## Project Initialization and First Look
