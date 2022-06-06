@@ -16,7 +16,7 @@ Then, we initialize our project by running the project command along with the `-
 
 `snc ui-component project --name my-project-name --description "Our Project Description"`
 
-<img src="images/First-Look_1.png" alt="Example of a terminal command to initialize a new ui-component project"/>
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_1.png" alt="Example of a terminal command to initialize a new ui-component project"/>
 
 > Note: If you don't have internet or access to your instance, you'll have to use the `--offline` flag as well as providing a custom scope with the `--scope` flag.
 
@@ -27,17 +27,17 @@ Now that the project's been scaffolded, we're almost ready to take a look at our
 While the dependencies are installing, let's take a look at the files that have been added to the project folder:
 
 The `now-ui.json` is where we configure the details of our new component, including how this component appears and interacts with the UI Builder interface. We'll add more to it later, but for now, the appearance of the component in the UI Builder menus (label, icon, description) can be set in this file.
-<img src="images/First-Look_2.png">
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_2.png">
 
 The `now-cli.json` contains the config for the CLI. If you have issues proxying your requests from the development environment, this is where to look.
 
 The only top-level file we'll need to edit is the `package.json`. As of time of writing, there's an additional dependency we'll need to install to test our components in the local environment. Adding the line `"react-error-overlay": "6.0.9"` to `devDependencies` (and running the command `npm install`) will prevent a bugged error overlay from blocking interaction with our component in the development environment.
 
-<img src="images/First-Look_5.png" alt="Adding 'react-error-overlay': '6.0.9' to devDependencies" />
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_5.png" alt="Adding 'react-error-overlay': '6.0.9' to devDependencies" />
 
 `snc ui-component develop` to start the development server. If the process seems to be stuck, ctrl + c and run the same command again. You should get a message confirming that the project is now running at http://localhost:8081/. Navigate to this address and you'll see...
 
-<img src="images/First-Look_6.png" alt="A blank white screen" />
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_6.png" alt="A blank white screen" />
 
 We're looking at our brand new component! There's just nothing in it yet.
 
@@ -49,7 +49,7 @@ Opening the src/index.js file, we discover the reason for the blank white screen
 
 At this point, the index.js file contains all the code for our component (aside from any styling rules we may have included in the styles.scss):
 
-<img src="images/First-Look_7.png" alt="The index.js file, with our 'Hello World' text added" />
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_7.png" alt="The index.js file, with our 'Hello World' text added" />
 
 The createCustomElement function accepts the name of the component as the first argument, and an object containing the rendering options as the second component. When the project is initialized, it contains three properties:
 
@@ -69,13 +69,13 @@ By adding html (jsx) to the return statement of the view function, we can add co
 
 In the createCustomElement function, we'll add a property to the options object called 'initialState,' and map it to an object with a 'name' key and a corresponding value.
 
-<img src="images/State_1.png" alt="Configuring the initialState of the component">
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/State_1.png" alt="Configuring the initialState of the component">
 
  initialState sets the default state when the component is mounted. The state can then be accessed from the view component, or any actionHandlers we may add later on.
 
  To access the current value of 'name', we can use object destructuring or dot notation to store the value in a variable, then use curly braces to evaluate that variable as code in our jsx.
 
-<img src="images/State_2.png" alt="Accessing and interpolating the value of state.name">
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/State_2.png" alt="Accessing and interpolating the value of state.name">
 
 Returning to the browser, you should see that the component has updated to display the name that we passed in. 
 
@@ -83,7 +83,7 @@ The neat thing about storing our dynamic values in state is that, when the state
 
 We can see this in action by adding a controlled input, which will allow our user to interact with the state and see the changes in real time. Let's add a div with a label and text input above our existing div. In addition to the type and name attributes, we'll also set `value={name}`. This will cause an error, since the return jsx of a component must be a single element - so we'll `import { Fragment } from '@servicenow/ui-renderer-snabbdom'` to wrap around our divs. 
 
-<img src="images/State_3.png" alt="Adding an input element">
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/State_3.png" alt="Adding an input element">
 
 Once our input element is added and rendering on the page, we can make the input controlled by adding the following on-change attribute and function:
 
@@ -91,7 +91,7 @@ Once our input element is added and rendering on the page, we can make the input
 
 This attribute adds an event listener to the input, which will call the updateState function with the event as an argument when the input value is changed. UpdateState takes a single argument, an object with key/value pairs for the bits of state that we want to change.
 
-<img src="images/State_4.png" alt="adding an on-change event listener to the input element" />
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/State_4.png" alt="adding an on-change event listener to the input element" />
 
 > Note: If you're used to React, you might expect to have to spread state when passing it to the updateState() function. With snabbdomm, however, the updateState() function will only change the values of the properties you provide it, and doesn't require you to create a new object reference manually, so spreading state is not necessary.
 
@@ -99,7 +99,7 @@ Unlike the `onChange` property React, our `on-change` function will fire only wh
 
 With our on-change handler set up, we can now trigger it by typing in the text field and pressing enter or clicking away. This updates the state of the component, and triggers a rerender that reflects our new component state. Now, our component is truly interactive!
 
-<img src="images/First-Look_8.png" alt="Our component, rendering the updated value of state.name">
+<img src="https://raw.githubusercontent.com/blingusblongus/creator-dna-example-ui-builder-rest-component/main/images/First-Look_8.png" alt="Our component, rendering the updated value of state.name">
 
 In the next article, we'll take it a step further by introducing action handlers and effects, and using them to fetch and display data from a ServiceNow Instance via REST API.
 
