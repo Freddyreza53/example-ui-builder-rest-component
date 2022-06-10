@@ -1,15 +1,17 @@
 import { createCustomElement, actionTypes } from '@servicenow/ui-core';
 import {createHttpEffect} from '@servicenow/ui-effect-http';
 import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
+import ResultTable from './ResultTable';
 import styles from './styles.scss';
 
-const {COMPONENT_BOOTSTRAPPED} = actionTypes;
+const {COMPONENT_BOOTSTRAPPED, COMPONENT_PROPERTY_CHANGED} = actionTypes;
 
-const view = (state, { updateState }) => {
+const view = (state, { updateState, dispatch }) => {
 
 	const { name } = state;
 
-	console.log('rerendered')
+	// console.log('rerendered')
+	// console.log(state);
 	return (
 		<Fragment>
 			<div>
@@ -18,10 +20,15 @@ const view = (state, { updateState }) => {
 					type="text" 
 					name="name-input"
 					value={name}
-					on-keyup={(e)=>updateState({name: e.target.value})}
+					on-change={(e)=>dispatch('FETCH_TABLE', {
+						table_name: 'sys_user',
+						sysparm_limit: '20',
+						sysparm_query: `ORDERBYDESCnumber`
+					})}
 				/>
 			</div>
 			<div>Hello {name}!</div>
+			<ResultTable data={state.query_result}/>
 		</Fragment>
 	);
 };
@@ -31,9 +38,26 @@ createCustomElement('x-792462-rest-example', {
 	view,
 	styles,
 	initialState: {
-		name: 'ServiceNow User'
+		name: 'ServiceNow User',
+		query_result: [],
 	},
 	actionHandlers: {
-		[COMPONENT_BOOTSTRAPPED]: () => console.log(createHttpEffect)
+		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => dispatch('FETCH_TABLE', {
+			table_name: 'sys_user',
+			sysparm_limit: '20',
+			sysparm_query: 'ORDERBYDESCnumber'
+		}),
+		['UPDATE_SEARCH']: ({action, updateState}) => updateState(action.payload),
+		'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
+			method: 'GET',
+			pathParams: ['table_name'],
+			queryParams: ['sysparm_limit', 'sysparm_query'],
+			successActionType: 'FETCH_TABLE_SUCCESS',
+			errorActionType: 'LOG_RESULT',
+		}),
+		'FETCH_TABLE_SUCCESS': ({action, updateState}) => {
+			updateState({query_result: action.payload.result})
+		},
+		'LOG_RESULT': ({action}) => console.log(action.payload),
 	}
 });
