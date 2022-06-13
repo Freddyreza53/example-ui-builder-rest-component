@@ -1,34 +1,27 @@
 import { createCustomElement, actionTypes } from '@servicenow/ui-core';
-import {createHttpEffect} from '@servicenow/ui-effect-http';
+import { createHttpEffect } from '@servicenow/ui-effect-http';
 import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
 import ResultTable from './ResultTable';
 import styles from './styles.scss';
 
-const {COMPONENT_BOOTSTRAPPED, COMPONENT_PROPERTY_CHANGED} = actionTypes;
+const { COMPONENT_BOOTSTRAPPED, COMPONENT_PROPERTY_CHANGED } = actionTypes;
 
-const view = (state, { updateState, dispatch }) => {
+const view = (state, { dispatch }) => {
 
 	const { name } = state;
 
-	// console.log('rerendered')
-	// console.log(state);
 	return (
 		<Fragment>
 			<div>
 				<label htmlFor="name-input">Name: </label>
-				<input 
-					type="text" 
+				<input
+					type="text"
 					name="name-input"
 					value={name}
-					on-change={(e)=>dispatch('FETCH_TABLE', {
-						table_name: 'sys_user',
-						sysparm_limit: '20',
-						sysparm_query: `ORDERBYDESCnumber`
-					})}
+					on-change={(e) => dispatch('SET_NAME', { name: e.target.value })}
 				/>
 			</div>
 			<div>Hello {name}!</div>
-			<ResultTable data={state.query_result}/>
 		</Fragment>
 	);
 };
@@ -39,9 +32,16 @@ createCustomElement('x-792462-rest-example', {
 	styles,
 	initialState: {
 		name: 'ServiceNow User',
-		query_result: [],
 	},
 	actionHandlers: {
+		'SET_NAME': ({action, updateState}) => updateState(action.payload),
+	}
+});
+
+
+
+/*
+actionHandlers: {
 		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => dispatch('FETCH_TABLE', {
 			table_name: 'sys_user',
 			sysparm_limit: '20',
@@ -60,4 +60,11 @@ createCustomElement('x-792462-rest-example', {
 		},
 		'LOG_RESULT': ({action}) => console.log(action.payload),
 	}
-});
+
+
+	on-change={(e)=>dispatch('FETCH_TABLE', {
+						table_name: 'sys_user',
+						sysparm_limit: '20',
+						sysparm_query: `ORDERBYDESCnumber`
+					})}
+*/
