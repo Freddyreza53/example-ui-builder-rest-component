@@ -1,10 +1,8 @@
 import { createCustomElement, actionTypes } from '@servicenow/ui-core';
-import { createHttpEffect } from '@servicenow/ui-effect-http';
 import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
-import ResultTable from './ResultTable';
 import styles from './styles.scss';
 
-const { COMPONENT_BOOTSTRAPPED, COMPONENT_PROPERTY_CHANGED } = actionTypes;
+const { COMPONENT_BOOTSTRAPPED } = actionTypes;
 
 const view = (state, { dispatch }) => {
 
@@ -35,6 +33,11 @@ createCustomElement('x-792462-rest-example', {
 	},
 	actionHandlers: {
 		'SET_NAME': ({action, updateState}) => updateState(action.payload),
+		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => {
+			console.log('component bootstrapped');
+			dispatch('FETCH_TABLE');
+		},
+		'FETCH_TABLE': () => console.log('this is where we make our REST call'),
 	}
 });
 

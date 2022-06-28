@@ -35,3 +35,35 @@ SET_NAME: ({action, updateState}) => updateState(action.payload)
 ```
 
 Since we set our payload to be an object with a key/value corresponding to a key/value set with `initialState`, we can pass it directly to `updateState` without needing to massage it. If we return to the browser, we'll see that our simple refactor is complete - changing the content of the input element dispatches an action, which is picked up by our action handler and used to update the state.
+
+## Built in Lifecycle Actions
+
+We've learned how to handle custom actions dispatched from our component or its subcomponents, but there's even more we can do with our action handlers. Components instantiated with `createCustomElement` also automatically dispatch a number of built-in actions that we can tap into by referencing the appropriate action types.
+
+To do this, we'll include `actionTypes` as an import from `@servicenow/ui-core`:
+
+```
+import { createCustomElement, actionTypes } from '@servicenow/ui-core';
+```
+
+Then, we can use object destructuring once again to grab a reference to the action type we want, in this case, `COMPONENT_BOOTSTRAPPED`. We'll add this line outside of our component, after the imports:
+
+```
+const { COMPONENT_BOOTSTRAPPED } = actionTypes;
+```
+
+and add it to our `actionHandlers` object:
+
+```
+[COMPONENT_BOOTSTRAPPED]: () => console.log('component loaded'),
+```
+
+Since this action type is a variable, we have to use square brackets when including it in our `actionHandlers` configuration. The `COMPONENT_BOOTSTRAPPED` action is dispatched only once, when the component is mounted, and its handler is a very handy place to put code that we only want to fire once (like fetching resources from an external source that we'll use to initialize our component, for example). Check out the [Component Lifecycle Action Handlers](https://developer.servicenow.com/dev.do#!/reference/now-experience/quebec/ui-framework/main-concepts/lifecycles) article of the ServiceNow docs to get a glimpse of the other lifecycle actions available (there's some neat stuff in there - some of these actions automatically have extra stuff in the payload, `previousRenderProperties` and `previousRenderState`)!
+
+> For those familiar with React hooks, you can use the `COMPONENT_BOOTSTRAPPED` action similar to how you might use the `useEffect()` hook with empty brackets as the second parameter to do an initial fetch for a component.
+
+We're almost ready to fetch some data from our instance - we'll want to fetch some data as soon as our component mounts, but we'll probably want to do that more often than just on component mount, so we'll expand our `[COMPONENT_BOOTSTRAPPED]` action handler to dispatch an action with the type `'FETCH_TABLE'`, and create another action handler to catch it.
+
+<img src="images/Action_Handlers_4.png" alt="The actionHandlers object configured with basic 'SET_NAME', [COMPONENT_BOOTSTRAPPED], and 'FETCH_TABLE' handlers."/>
+
+> Note that actions always need types, but not necessarily payloads. 
