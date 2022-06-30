@@ -7,7 +7,7 @@ const { COMPONENT_BOOTSTRAPPED } = actionTypes;
 
 const view = (state, { dispatch }) => {
 
-	const { name } = state;
+	const { name, list } = state;
 
 	return (
 		<Fragment>
@@ -17,10 +17,17 @@ const view = (state, { dispatch }) => {
 					type="text"
 					name="name-input"
 					value={name}
-					on-change={(e) => dispatch('SET_NAME', { name: e.target.value })}
+					on-change={(e) => dispatch('SET_NAME', { 
+						name: e.target.value 
+					})}
 				/>
 			</div>
 			<div>Hello {name}!</div>
+
+		{list.map(item => {
+			const {last_name, first_name, sys_id} = item;
+			return <div key={sys_id}>{last_name}, {first_name}</div>
+		})}
 		</Fragment>
 	);
 };
@@ -31,12 +38,17 @@ createCustomElement('x-792462-rest-example', {
 	styles,
 	initialState: {
 		name: 'ServiceNow User',
+		list: [],
 	},
 	actionHandlers: {
 		'SET_NAME': ({action, updateState}) => updateState(action.payload),
 		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => {
 			console.log('component bootstrapped');
-			dispatch('FETCH_TABLE', {table_name: 'sys_user', sysparm_limit: 10, sysparm_query: ''});
+			dispatch('FETCH_TABLE', {
+				table_name: 'sys_user', 
+				sysparm_limit: 10, 
+				sysparm_query: 'first_name=Fred'
+			});
 		},
 		'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
 			method: 'GET',
@@ -47,9 +59,9 @@ createCustomElement('x-792462-rest-example', {
 			errorActionType: 'FETCH_TABLE_ERROR',
 		}),
 		'FETCH_TABLE_INITIATED': () => console.log('Fetching Table Data...'),
-		'FETCH_TABLE_SUCCESS': ({action}) => {
+		'FETCH_TABLE_SUCCESS': ({action, updateState}) => {
 			console.log('Success!');
-			console.log(action.payload);
+			updateState({list: action.payload.result});
 		},
 		'FETCH_TABLE_ERROR': ({action}) => {
 			console.log('Error:');

@@ -74,4 +74,43 @@ Here's where ServiceNow provides a tool to help standardize our effects - though
 
 Looking at the handler we just created, you can see that the `createHttpEffect` function accepts two parameters - the API endpoint and an object with configuration options. Here, we've defined the request method ('GET'), the pathParams noted in the url with `':table_name'`, the query parameters we want to include, and the types of the actions that will be dispatched when the promise resolves.
 
-At this point, dispatching an action with the type `FETCH_TABLE` and a payload
+At this point, dispatching an action with the type `FETCH_TABLE` and a payload object with key/value pairs representing the path and query parameters will create an HttpEffect with our REST request, and will send the returned data as the payload along with either our successActionType or errorActionType. Let's try it, by adding the following object to our `FETCH_TABLE` action in the `COMPONENT_BOOTSTRAPPED` action handler:
+
+```
+{
+    table_name: 'sys_user', 
+    sysparm_limit: 10, 
+    sysparm_query: 'first_name=Fred'
+}
+```
+
+> If the console here is logging a 404 error, run `snc configure profile set` and input the relevant data for your instance to ensure that the proxy is configured correctly. When I ran into a proxying error, I terminated my node process, ran `killall node` for good measure, confirmed my CLI configuration with `snc configure profile set`, and then ran `snc ui-component develop` twice to get it up and running on port 8081, though I'm not sure all that is strictly necessary.
+
+We should have a 'Success!' log in the console informing us that the `FETCH_TABLE_SUCCESS` action was dispatched, and have a result object containing an array with the matched records printed in the console as well. We've successfully created a custom component that can fetch data from our ServiceNow instance! Most excellent.
+
+<img src="images/Action_Handlers_6.png" alt="Console logs of the result of the REST API call."/>
+
+The data's still not on the DOM yet, though - but if we store it in our component state, we can access that data from the view and automatically rerender the component when the fetch completes and state changes. In the `createCustomElement` config, we'll add `initialState.list`:
+
+```
+initialState: {
+    name: 'ServiceNow User',
+    list: [],
+},
+```
+
+and update the `FETCH_TABLE_SUCCESS` handler to destructure `updateState` from `coeffects`, and use it to set the list...
+
+<img src="images/Action_Handlers_7.png" alt="Destructuring updateState from coeffects, and setting the new value of state.list to action.payload.result"/>
+
+If you're new to React and have kept the logs we placed earlier, putting a `console.log(state)` right before the return of our View component will give us a nice overview of the lifecycle of the component:
+
+<img src="images/Action_Handlers_8.png" alt="Console.logs showing the lifecycle of the component."/>
+
+1. The component is bootstrapped (renders for the first time). At this point, `state.list` = []
+2. A series of actions is kicked off: `COMPONENT_BOOTSTRAPPED` => `FETCH_TABLE` => `FETCH_TABLE_SUCCESS`
+3. The `FETCH_TABLE_SUCCESS` handler updates the state of our component with `updateState()`
+4. Because the state was updated, our component rerenders - this time, with `state.list` = *Array(2)*, or whatever records were returned from the ServiceNow REST API.
+
+In later articles, we'll do more styling, but for now, let's just slap it on the DOM. In the view component, we'll destructure state.list, and then evaluate code in the return statement to map through it and render a simple `<div>` for each item.
+
