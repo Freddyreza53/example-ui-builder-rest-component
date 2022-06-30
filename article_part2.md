@@ -62,6 +62,8 @@ Since this action type is a variable, we have to use square brackets when includ
 
 > For those familiar with React hooks, you can use the `COMPONENT_BOOTSTRAPPED` action similar to how you might use the `useEffect()` hook with empty brackets as the second parameter to do an initial fetch for a component.
 
+## Communicating with the ServiceNow REST API
+
 We're almost ready to fetch some data from our instance - we'll want to fetch some data as soon as our component mounts, but we might want to reuse that effect later, too...so we'll expand our `[COMPONENT_BOOTSTRAPPED]` action handler to dispatch an action with the type `'FETCH_TABLE'`, and put our REST call in another action handler, so that we can trigger it programmatically from different places in our code.
 
 <img src="images/Action_Handlers_4.png" alt="The actionHandlers object configured with basic 'SET_NAME', [COMPONENT_BOOTSTRAPPED], and 'FETCH_TABLE' handlers."/>
@@ -90,6 +92,8 @@ We should have a 'Success!' log in the console informing us that the `FETCH_TABL
 
 <img src="images/Action_Handlers_6.png" alt="Console logs of the result of the REST API call."/>
 
+## Updating our Component
+
 The data's still not on the DOM yet, though - but if we store it in our component state, we can access that data from the view and automatically rerender the component when the fetch completes and state changes. In the `createCustomElement` config, we'll add `initialState.list`:
 
 ```
@@ -114,3 +118,38 @@ If you're new to React and have kept the logs we placed earlier, putting a `cons
 
 In later articles, we'll do more styling, but for now, let's just slap it on the DOM. In the view component, we'll destructure state.list, and then evaluate code in the return statement to map through it and render a simple `<div>` for each item.
 
+<img src="images/Action_Handlers_9.png" alt="The code for the view component, updated to map through and display the elements in state.list"/>
+
+> I've included the 'key' prop here just to be safe - in React, the key prop has to be a distinct value, and is used to differentiate elements that are programmatically generated at the same level, in order to track them in the virtual DOM.
+
+## Using User Input
+
+Our component's doing what it's supposed to, but it'd be great if it was a bit more flexible. As a quick example, we'll allow a user to determine the exact query we'll use when retrieving results from our ServiceNow instance. To do so, we'll need to do the following:
+
+1. Initialize state with a 'query' property
+2. Set up an input to track and update that property
+3. Add a button to initiate the fetch.
+4. Define actions and action handlers to handle the `state.query` updates and button click.
+
+First, we update our config in `createCustomElement`:
+```
+initialState: {
+    name: 'ServiceNow User',
+    list: [],
+    query: '',
+},
+```
+
+Then, we add elements to the view to handle user input: 
+
+<img src="images/Action_Handlers_10.png" alt="An input, label, and button to dispatch actions in response to user interaction."/>
+
+Finally, we add the new `SET_QUERY` action handler:
+
+```
+actionHandlers: {
+    ...
+    'SET_QUERY': ({action, updateState}) => updateState(action.payload),
+    ...
+}
+```
