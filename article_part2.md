@@ -1,4 +1,4 @@
-### Custom Components in the Now Experience UI Framework Part 2: Actions and Action Handlers
+# Custom Components in the Now Experience UI Framework Part 2: Actions and Action Handlers
 
 In the last article, we walked through the process of initializing a custom component with ServiceNow ui-component cli tool, gave a brief overview of the boilerplate files and their function, and built a simple stateful component that tracks user input, and displays the information stored in the component state.
 
@@ -22,7 +22,7 @@ So let's write a basic action that we can dispatch via user interaction. We're g
 
 Every time our input's on-change function fires, it will dispatch an action that bubbles up through the DOM. Each action includes a string `type`(good practice is to use SCREAMING_SNAKE case) used to match the action to the appropriate handler, and a payload containing the data we want to pass, usually in the form of an object. Our example action has the type 'SET_NAME', and an object payload with a single key/value pair for now.
 
-We haven't yet set up a handler to catch that action, though - we can test that our action is being dispatched by adding a handler that will print the payload of that action to the console. To do so, we'll create a property `actionHandlers` in the `createCustomElement` config object, which will consist of an object. The keys of our actionHandlers object will correspond to the `type` of the action we want to catch, and the value will consist of a function that we want to run when that action is received. To make sure our action is being dispatched properly, we'll start with a simple `console.log()`.
+We haven't yet set up a handler to catch that action, though - we can test that our action is being dispatched by adding a handler that will print the payload of that action to the console. To do so, we'll create a property `actionHandlers` in the `createCustomElement` config object. The keys of our actionHandlers object will correspond to the `type` of the action we want to catch, and the values will consist of a function that we want to run when the corresponding action is received. To make sure our action is being dispatched properly, we'll start with a simple `console.log`.
 
 <img src="images/Action_Handlers_3.png" alt="The createCustomElement config object, with a single action handler added"/>
 
@@ -103,7 +103,7 @@ initialState: {
 },
 ```
 
-and update the `FETCH_TABLE_SUCCESS` handler to destructure `updateState` from `coeffects`, and use it to set the list...
+and update the `FETCH_TABLE_SUCCESS` handler to destructure `updateState` from `coeffects`, using it to set the list...
 
 <img src="images/Action_Handlers_7.png" alt="Destructuring updateState from coeffects, and setting the new value of state.list to action.payload.result"/>
 
@@ -122,7 +122,7 @@ In later articles, we'll do more styling, but for now, let's just slap it on the
 
 > I've included the 'key' prop here just to be safe - in React, the key prop has to be a distinct value, and is used to differentiate elements that are programmatically generated at the same level, in order to track them in the virtual DOM.
 
-## Using User Input
+## Handling User Input
 
 Our component's doing what it's supposed to, but it'd be great if it was a bit more flexible. As a quick example, we'll allow a user to determine the exact query we'll use when retrieving results from our ServiceNow instance. To do so, we'll need to do the following:
 

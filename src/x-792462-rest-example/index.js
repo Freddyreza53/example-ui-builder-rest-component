@@ -9,8 +9,6 @@ const view = (state, { dispatch }) => {
 
 	const { name, list, query } = state;
 
-	console.log(state);
-
 	return (
 		<Fragment>
 			<div>
@@ -45,7 +43,7 @@ const view = (state, { dispatch }) => {
 				})}>Fetch Result</button>
 			</div>
 
-			{list.map(item => {
+			{list.map((item, i) => {
 				const { last_name, first_name, sys_id } = item;
 				return <div key={sys_id}>{last_name}, {first_name}</div>
 			})}
@@ -122,4 +120,14 @@ actionHandlers: {
 						sysparm_limit: '20',
 						sysparm_query: `ORDERBYDESCnumber`
 					})}
+
+
+
+				{list.map((item, i) => {
+				const { last_name, first_name, sys_id } = item;
+				return <div key={sys_id}
+					className='fadein'
+					style={{animationDelay: i * .05 + 's'}}
+				>{last_name}, {first_name}</div>
+			})}
 */
