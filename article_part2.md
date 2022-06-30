@@ -116,7 +116,7 @@ If you're new to React and have kept the logs we placed earlier, putting a `cons
 3. The `FETCH_TABLE_SUCCESS` handler updates the state of our component with `updateState()`
 4. Because the state was updated, our component rerenders - this time, with `state.list` = *Array(2)*, or whatever records were returned from the ServiceNow REST API.
 
-In later articles, we'll do more styling, but for now, let's just slap it on the DOM. In the view component, we'll destructure state.list, and then evaluate code in the return statement to map through it and render a simple `<div>` for each item.
+In later articles, we'll do more styling, but for now, let's just slap it on the DOM. In the view component, we'll destructure `state.list`, and then evaluate code in the return statement to map through it and render a simple `<div>` for each item.
 
 <img src="images/Action_Handlers_9.png" alt="The code for the view component, updated to map through and display the elements in state.list"/>
 
