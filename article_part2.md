@@ -62,8 +62,16 @@ Since this action type is a variable, we have to use square brackets when includ
 
 > For those familiar with React hooks, you can use the `COMPONENT_BOOTSTRAPPED` action similar to how you might use the `useEffect()` hook with empty brackets as the second parameter to do an initial fetch for a component.
 
-We're almost ready to fetch some data from our instance - we'll want to fetch some data as soon as our component mounts, but we'll probably want to do that more often than just on component mount, so we'll expand our `[COMPONENT_BOOTSTRAPPED]` action handler to dispatch an action with the type `'FETCH_TABLE'`, and create another action handler to catch it.
+We're almost ready to fetch some data from our instance - we'll want to fetch some data as soon as our component mounts, but we might want to reuse that effect later, too...so we'll expand our `[COMPONENT_BOOTSTRAPPED]` action handler to dispatch an action with the type `'FETCH_TABLE'`, and put our REST call in another action handler, so that we can trigger it programmatically from different places in our code.
 
 <img src="images/Action_Handlers_4.png" alt="The actionHandlers object configured with basic 'SET_NAME', [COMPONENT_BOOTSTRAPPED], and 'FETCH_TABLE' handlers."/>
 
-> Note that actions always need types, but not necessarily payloads. 
+> Note that actions always need types, but not necessarily payloads (we will end up adding a payload in a bit, though).
+
+Here's where ServiceNow provides a tool to help standardize our effects - though you can do a REST call in an action handler by any means you normally would, in this case we'll `import {createHttpEffect} from '@servicenow/ui-effect-http';` at the top of our file, add it to our 'FETCH_TABLE' action handler, and configure it according to the [Http Effect API Docs](https://developer.servicenow.com/dev.do#!/reference/now-experience/sandiego/ui-framework/api-reference/effect-http). 
+
+<img src="images/Action_Handlers_5.png" alt="Our 'FETCH_TABLE' handler, configured to accept a payload with path and query params and consume the ServiceNow REST API."/>
+
+Looking at the handler we just created, you can see that the `createHttpEffect` function accepts two parameters - the API endpoint and an object with configuration options. Here, we've defined the request method ('GET'), the pathParams noted in the url with `':table_name'`, the query parameters we want to include, and the types of the actions that will be dispatched when the promise resolves.
+
+At this point, dispatching an action with the type `FETCH_TABLE` and a payload

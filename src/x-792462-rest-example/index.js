@@ -1,4 +1,5 @@
 import { createCustomElement, actionTypes } from '@servicenow/ui-core';
+import {createHttpEffect} from '@servicenow/ui-effect-http';
 import snabbdom, { Fragment } from '@servicenow/ui-renderer-snabbdom';
 import styles from './styles.scss';
 
@@ -35,9 +36,25 @@ createCustomElement('x-792462-rest-example', {
 		'SET_NAME': ({action, updateState}) => updateState(action.payload),
 		[COMPONENT_BOOTSTRAPPED]: ({dispatch}) => {
 			console.log('component bootstrapped');
-			dispatch('FETCH_TABLE');
+			dispatch('FETCH_TABLE', {table_name: 'sys_user', sysparm_limit: 10, sysparm_query: ''});
 		},
-		'FETCH_TABLE': () => console.log('this is where we make our REST call'),
+		'FETCH_TABLE': createHttpEffect('api/now/table/:table_name', {
+			method: 'GET',
+			pathParams: ['table_name'],
+			queryParams: ['sysparm_limit', 'sysparm_query'],
+			startActionType: 'FETCH_TABLE_INITIATED',
+			successActionType: 'FETCH_TABLE_SUCCESS',
+			errorActionType: 'FETCH_TABLE_ERROR',
+		}),
+		'FETCH_TABLE_INITIATED': () => console.log('Fetching Table Data...'),
+		'FETCH_TABLE_SUCCESS': ({action}) => {
+			console.log('Success!');
+			console.log(action.payload);
+		},
+		'FETCH_TABLE_ERROR': ({action}) => {
+			console.log('Error:');
+			console.error(action.payload)
+		}
 	}
 });
 
