@@ -158,4 +158,4 @@ And that's all it takes! Since we set up our `FETCH_TABLE` action handler to acc
 
 <img src="images/Action_Handlers_11.png" alt="The component displaying results based on user input"/>
 
-That's all for this one - in the next articles, we'll look at configuring our component to accept variable properties passed in through the UI Builder Interface, as well as styling components and integrating existing ServiceNow components.
+That's all for this one - in the next articles, we'll look at configuring our component to accept variable properties passed in through the UI Builder Interface, styling components, refactoring and organizing components and subcomponents, and integrating existing ServiceNow components.
